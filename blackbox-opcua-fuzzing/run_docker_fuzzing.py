@@ -10,7 +10,7 @@ from docker.errors import ImageNotFound
 
 DEFAULT_DIR = './fuzzing_results'
 BASE_TAG = 'blackbox-fuzzer/baseimage'
-TARGETS = ['node-opc', 'open62541', 'python-opcua', 'dotnet', 'java']
+TARGETS = ['node-opc', 'open62541', 'python-opcua', 'dotnet', 'java','s2opc']
 SETUP_SH = '#!/usr/bin/env bash\n\ntargets/{target}/install.sh\n\nexit 0\n'
 
 
