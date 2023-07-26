@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -o errexit                                                                                          
+set -o nounset                                                                                          
+set -o pipefail 
+
 apt-get update
 apt-get install -y wget build-essential clang-9 gcc g++ doxygen graphviz 
 
@@ -49,6 +53,13 @@ cd ..
 sed -i "s/4841/4840/g" S2OPC_Server_Demo_Config.xml
 sed -i "s/encrypted_server_4k_key.pem/server_4k_key.pem/g" S2OPC_Server_Demo_Config.xml
 sed -i "13s/true/false/g" S2OPC_Server_Demo_Config.xml
+
+mv /opt/app/targets/s2opc/nonePolicy.txt .
+linenumber=31
+while read line; do 
+sed -i -e "${linenumber}a $line" S2OPC_Server_Demo_Config.xml;
+linenumber=$((linenumber+1))
+done < nonePolicy.txt
 
 )
 cd /opt/app

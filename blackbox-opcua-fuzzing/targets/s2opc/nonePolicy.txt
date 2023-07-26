@@ -1,0 +1,8 @@
+          <SecurityPolicy uri="http://opcfoundation.org/UA/SecurityPolicy#None">
+          <SecurityModes>
+              <SecurityMode mode="None"/>
+            </SecurityModes>
+            <UserPolicies>
+              <UserPolicy policyId="anon" tokenType="anonymous"/>
+            </UserPolicies>
+          </SecurityPolicy>

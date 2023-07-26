@@ -78,10 +78,10 @@ def set_channel_parameter_from_open(target, fuzz_data_logger, session, node, *_,
     except struct.error:
         fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
     else:
-        node.stack[1].stack[0]._value = sec_channel_id
-        node.stack[1].stack[1]._value = token_id
-        node.stack[1].stack[2]._value = seq_num + 1
-        node.stack[1].stack[3]._value = req_id + 1
+        node.stack[1].stack[0]._default_value = sec_channel_id
+        node.stack[1].stack[1]._default_value = token_id
+        node.stack[1].stack[2]._default_value = seq_num + 1
+        node.stack[1].stack[3]._default_value = req_id + 1
 
 
 def set_channel_parameter_from_create(target, fuzz_data_logger, session, node, *_, **__):  # pylint: disable=protected-access
@@ -94,10 +94,11 @@ def set_channel_parameter_from_create(target, fuzz_data_logger, session, node, *
     except struct.error:
         fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
     else:
-        node.stack[1].stack[0]._value = channel_id
-        node.stack[1].stack[1]._value = token_id
-        node.stack[1].stack[2]._value = seq_num + 1
-        node.stack[1].stack[3]._value = req_id + 1
+        node.stack[1].stack[0]._default_value = channel_id
+        node.stack[1].stack[1]._default_value = token_id
+        node.stack[1].stack[2]._default_value = seq_num + 1
+        node.stack[1].stack[3]._default_value = req_id + 1
+        
 
 
 def hello_definition():
