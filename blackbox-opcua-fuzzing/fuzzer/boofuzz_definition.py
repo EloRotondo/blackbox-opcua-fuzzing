@@ -92,9 +92,7 @@ def set_channel_parameter_from_create(target, fuzz_data_logger, session, node, *
     try:
         channel_id, token_id, seq_num, req_id = struct.unpack('iiii', recv[8:24])
         #authToken_id = struct.unpack('i', recv[62:66])
-        numbers = [0,222,888,444]
-        numbers.append(recv[62:66])
-        authToken_id = numbers[4]
+        authToken_id = recv[62:66]
 
         
     except struct.error:
