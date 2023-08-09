@@ -41,6 +41,11 @@ make install
 cd /opt/app
 git clone https://gitlab.com/systerel/S2OPC.git
 (
+cd /opt/app/S2OPC/src/ClientServer/configuration
+sed -i "49s/150/5400/g" sopc_toolkit_config_constants.h 
+sed -i "130s/20/4100/g" sopc_toolkit_config_constants.h 
+sed -i "77s/21/4200/g" sopc_toolkit_config_constants.h 
+
 cd /opt/app/S2OPC
 export CC="gcc" CXX="g++"
 ./build.sh
@@ -53,13 +58,15 @@ cd ..
 sed -i "s/4841/4840/g" S2OPC_Server_Demo_Config.xml
 sed -i "s/encrypted_server_4k_key.pem/server_4k_key.pem/g" S2OPC_Server_Demo_Config.xml
 sed -i "13s/true/false/g" S2OPC_Server_Demo_Config.xml
+sed -i -e '26a <ApplicationType type="DiscoveryServer"/>' S2OPC_Server_Demo_Config.xml
 
 mv /opt/app/targets/s2opc/nonePolicy.txt .
-linenumber=31
+linenumber=32
 while read line; do 
 sed -i -e "${linenumber}a $line" S2OPC_Server_Demo_Config.xml;
 linenumber=$((linenumber+1))
 done < nonePolicy.txt
+
 
 )
 cd /opt/app
