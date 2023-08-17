@@ -77,7 +77,7 @@ def set_channel_parameter_from_open(target, fuzz_data_logger, session, node, *_,
         token_offset = sequence_offset + 8 + 4 + request_header_length + 4
         sec_channel_id, token_id = struct.unpack('ii', recv[token_offset:token_offset + 8])
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
     else:
         node.stack[1].stack[0]._default_value = sec_channel_id
         node.stack[1].stack[1]._default_value = token_id
@@ -97,7 +97,7 @@ def set_channel_parameter_from_create(target, fuzz_data_logger, session, node, *
 
         
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
 
     else:
         node.stack[1].stack[0]._default_value = channel_id
@@ -115,7 +115,7 @@ def set_channel_parameter_from_activate(target, fuzz_data_logger, session, node,
         channel_id, token_id, seq_num, req_id = struct.unpack('iiii', recv[8:24])
         
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
 
     else:
         node.stack[1].stack[0]._default_value = channel_id
@@ -135,7 +135,7 @@ def set_channel_parameter_from_browse(target, fuzz_data_logger, session, node, *
         continuationP_id = recv[64:72]
         
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
 
     else:
         node.stack[1].stack[0]._default_value = channel_id
@@ -254,36 +254,36 @@ def activate_session_definition():
         s_bytes(b'\x01\x00' + struct.pack('<H', 467), name='Type id', fuzzable=False)
 
         # request header
-        s_bytes(b'\x02', name='encoding mask guid', fuzzable=False)
-        s_bytes(b'\x00\x00', name='namespace idx', fuzzable=False)
+        s_bytes(b'\x02', name='encoding mask guid')
+        s_bytes(b'\x00\x00', name='namespace idx')
         s_dword(0,name='authentication token id',fuzzable=False)  # will be overwritten
-        s_qword(get_weird_opc_timestamp(), name='timestamp', fuzzable=False)
-        s_dword(2, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(5000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_qword(get_weird_opc_timestamp(), name='timestamp')
+        s_dword(2, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(5000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         # client signature
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='client algorithm', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='client signature', fuzzable=False)
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='client algorithm')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='client signature')
 
-        s_bytes(b'\x00\x00\x00\x00', name='locale id', fuzzable=False)
-        s_bytes(b'\x00\x00\x00\x00', name='client software certificates', fuzzable=False)
+        s_bytes(b'\x00\x00\x00\x00', name='locale id')
+        s_bytes(b'\x00\x00\x00\x00', name='client software certificates')
 
         # UserIdentityToken
-        s_bytes(b'\x01\x00' + struct.pack('<H', 321), name='user type id', fuzzable=False)
+        s_bytes(b'\x01\x00' + struct.pack('<H', 321), name='user type id')
         s_bytes(b'\x01', name='binary body', fuzzable=False)
 
         policy_id = 'anonymous'.encode('utf-8')
-        s_dword(len(policy_id) + 4 + 4 + 4 + 4, name='length user id token', fuzzable=False)
-        s_dword(len(policy_id), name='id length', fuzzable=False)
-        s_bytes(policy_id, name='policy id', fuzzable=False)
+        s_dword(len(policy_id) + 4 + 4 + 4 + 4, name='length user id token')
+        s_dword(len(policy_id), name='id length')
+        s_bytes(policy_id, name='policy id')
 
 
         # user token signature
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='user sign algorithm', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='user signature', fuzzable=False)
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='user sign algorithm')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='user signature')
 
 
 def discovery_service_definition(service_name: str, request_type: int):
@@ -481,7 +481,7 @@ def close_session_definition():
         s_dword(4, name='request handle')
         s_dword(0, name='return diagnostics')
         s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
-        s_dword(5000, name='timeout hint',fuzzable=False)
+        s_dword(5000, name='timeout hint')
         s_bytes(b'\x00\x00\x00', name='additional header')
         s_bytes(b'\x00', name='delete subscription (false)')
 
@@ -508,7 +508,7 @@ def browse_node_definition(node_id: int):
         s_bytes(b'\x00\x00', name='namespace index')
         s_dword(0,name='authentication token id',fuzzable=False)  # will be overwritten
         s_qword(get_weird_opc_timestamp(), name='timestamp')
-        s_dword(3, name='request handle', fuzzable=False)
+        s_dword(3, name='request handle')
         s_dword(0, name='return diagnostics')
         s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
         s_dword(5000, name='timeout hint')
@@ -523,17 +523,17 @@ def browse_node_definition(node_id: int):
         s_dword(1, name='array size (nodes to browse)')
 
         if(0 < node_id < 255):
-            s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)', fuzzable=False)
+            s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)')
         else:
-            s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)', fuzzable=False)
-            s_bytes(b'\x00', name='namespace id', fuzzable=False)
+            s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)')
+            s_bytes(b'\x00', name='namespace id')
             
         s_bytes(struct.pack('<H', node_id), name='node id', fuzzable=False)
-        s_dword(2, name='browse direction', fuzzable=False)
-        s_bytes(b'\x00\x00', name='referenceTypeId', fuzzable=False)
-        s_bytes(b'\x00', name='include subtypes', fuzzable=False)
-        s_bytes(b'\xFF\x00\x00\x00', name='node class mask', fuzzable=False)
-        s_bytes(b'\x3F\x00\x00\x00', name='result mask', fuzzable=False)
+        s_dword(2, name='browse direction')
+        s_bytes(b'\x00\x00', name='referenceTypeId')
+        s_bytes(b'\x00', name='include subtypes')
+        s_bytes(b'\xFF\x00\x00\x00', name='node class mask')
+        s_bytes(b'\x3F\x00\x00\x00', name='result mask')
 
 def browse_next_definition():
     s_initialize('BrowseNext')
@@ -620,9 +620,9 @@ def write_node_definition(node_id: int, buildInId: int, value: any):
     s_initialize('Write')
 
     with s_block('g-header'):
-        s_bytes(b'MSG', name='Open channel magic', fuzzable=False)
-        s_bytes(b'F', name='Chunk type', fuzzable=False)
-        s_size('g-body', offset=8, name='body size', fuzzable=False)
+        s_bytes(b'MSG', name='Open channel magic')
+        s_bytes(b'F', name='Chunk type')
+        s_size('g-body', offset=8, name='body size')
 
     with s_block('g-body'):
         # security
@@ -634,55 +634,55 @@ def write_node_definition(node_id: int, buildInId: int, value: any):
         s_bytes(b'\x01\x00' + struct.pack('<H', 673), name='Type id', fuzzable=False)
 
         # request header
-        s_bytes(b'\x02', name='authentification token encoding mask', fuzzable=False)
-        s_bytes(b'\x00\x00', name='authentification token namespace index', fuzzable=False)
+        s_bytes(b'\x02', name='authentification token encoding mask')
+        s_bytes(b'\x00\x00', name='authentification token namespace index')
         s_dword(0, name='authentification token id', fuzzable=False)  # will be overwritten
         s_qword(get_weird_opc_timestamp(), name='timestamp')
-        s_dword(3, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(5000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_dword(3, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(5000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         # request parameter
         s_dword(1, name='array size')
        
         if(0 < node_id < 255):
-            s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)', fuzzable=False)
+            s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)')
         else:
-            s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)', fuzzable=False)
-            s_bytes(b'\x00', name='namespace id', fuzzable=False)
+            s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)')
+            s_bytes(b'\x00', name='namespace id')
 
-        s_bytes(struct.pack('<H', node_id), name='node id', fuzzable=False)
-        s_dword(bytes([13]), name='attribute id', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='IndexRange', fuzzable=False)
-        s_bytes(b'\x05', name='value encodingmask', fuzzable=False)
-        s_bytes(bytes([buildInId]), name='variant type', fuzzable=False)
+        s_bytes(struct.pack('<H', node_id), name='node id')
+        s_dword(bytes([13]), name='attribute id')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='IndexRange')
+        s_bytes(b'\x05', name='value encodingmask')
+        s_bytes(bytes([buildInId]), name='variant type')
 
         if buildInId == 1:
-                s_bytes(struct.pack('<?', value), name='value to write (boolean)', fuzzable=False)
+                s_bytes(struct.pack('<?', value), name='value to write (boolean)')
         elif buildInId ==  2 or buildInId == 3:
-                s_bytes(value, name='value to write (sbyte and byte)', fuzzable=False)
+                s_bytes(value, name='value to write (sbyte and byte)')
         elif buildInId == 4:
-                s_bytes(struct.pack('<h', value), name='value to write(Int16) ', fuzzable=False)
+                s_bytes(struct.pack('<h', value), name='value to write(Int16) ')
         elif buildInId == 5:
-                s_bytes(struct.pack('<H', value), name='value to write (UInt16)', fuzzable=False)
+                s_bytes(struct.pack('<H', value), name='value to write (UInt16)')
         elif buildInId == 6:
-                s_bytes(struct.pack('<i', value), name='value to write (Int32)', fuzzable=False)
+                s_bytes(struct.pack('<i', value), name='value to write (Int32)')
         elif buildInId == 7:
-                s_bytes(struct.pack('<I', value), name='value to write (UInt32)', fuzzable=False)
+                s_bytes(struct.pack('<I', value), name='value to write (UInt32)')
         elif buildInId == 8:
-                s_bytes(struct.pack('<q', value), name='value to write (Int64)', fuzzable=False)
+                s_bytes(struct.pack('<q', value), name='value to write (Int64)')
         elif buildInId == 9:
-                s_bytes(struct.pack('<Q', value), name='value to write (UInt64)', fuzzable=False)
+                s_bytes(struct.pack('<Q', value), name='value to write (UInt64)')
         elif buildInId == 10:
-                s_dword(struct.pack('<f', value), name='value to write (float)', fuzzable=False)
+                s_dword(struct.pack('<f', value), name='value to write (float)')
         elif buildInId == 11:
-                s_qword(struct.pack('<d', value), name='value to write (double)', fuzzable=False)
+                s_qword(struct.pack('<d', value), name='value to write (double)')
         elif buildInId == 12:
-               s_bytes(value.encode('utf-8'), name='value to write (string)', fuzzable=False)
+               s_bytes(value.encode('utf-8'), name='value to write (string)')
 
-        s_qword(get_weird_opc_timestamp(), name='source timestamp', fuzzable=False)
+        s_qword(get_weird_opc_timestamp(), name='source timestamp')
 
 def fuzz_opcua(file_path: Path) -> str:
     session = setup_session('127.0.0.1', 4840, str(file_path.absolute()))
@@ -706,20 +706,20 @@ def fuzz_opcua(file_path: Path) -> str:
 
     session.connect(s_get('Hello'))
     session.connect(s_get('Hello'), s_get('OpenChannel'))
-    # session.connect(s_get('OpenChannel'), s_get('CloseChannel'), callback=set_channel_parameter_from_open)
-    # session.connect(s_get('OpenChannel'), s_get('FindServers'), callback=set_channel_parameter_from_open)
-    #session.connect(s_get('OpenChannel'), s_get('GetEndpoints'), callback=set_channel_parameter_from_open)
-    #session.connect(s_get('OpenChannel'), s_get('FindServersOnNetwork'), callback=set_channel_parameter_from_open)
-    #session.connect(s_get('OpenChannel'), s_get('RegisterServer2'), callback=set_channel_parameter_from_open)
+    session.connect(s_get('OpenChannel'), s_get('CloseChannel'), callback=set_channel_parameter_from_open)
+    session.connect(s_get('OpenChannel'), s_get('FindServers'), callback=set_channel_parameter_from_open)
+    session.connect(s_get('OpenChannel'), s_get('GetEndpoints'), callback=set_channel_parameter_from_open)
+    session.connect(s_get('OpenChannel'), s_get('FindServersOnNetwork'), callback=set_channel_parameter_from_open)
+    session.connect(s_get('OpenChannel'), s_get('RegisterServer2'), callback=set_channel_parameter_from_open)
 
     session.connect(s_get('OpenChannel'), s_get('CreateSession'), callback=set_channel_parameter_from_open)
     session.connect(s_get('CreateSession'), s_get('ActivateSession'), callback=set_channel_parameter_from_create)
-    #session.connect(s_get('ActivateSession'), s_get('CloseSession'), callback=set_channel_parameter_from_activate)
+    session.connect(s_get('ActivateSession'), s_get('CloseSession'), callback=set_channel_parameter_from_activate)
     
-    #session.connect(s_get('ActivateSession'), s_get('Browse'), callback=set_channel_parameter_from_activate)
-    #session.connect(s_get('Browse'), s_get('BrowseNext'), callback=set_channel_parameter_from_browse)
+    session.connect(s_get('ActivateSession'), s_get('Browse'), callback=set_channel_parameter_from_activate)
+    session.connect(s_get('Browse'), s_get('BrowseNext'), callback=set_channel_parameter_from_browse)
 
-    #session.connect(s_get('ActivateSession'), s_get('Read'), callback=set_channel_parameter_from_activate)
+    session.connect(s_get('ActivateSession'), s_get('Read'), callback=set_channel_parameter_from_activate)
     session.connect(s_get('ActivateSession'), s_get('Write'), callback=set_channel_parameter_from_activate)
 
 
