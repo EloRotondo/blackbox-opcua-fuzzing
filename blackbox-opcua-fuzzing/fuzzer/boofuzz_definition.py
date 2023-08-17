@@ -1,4 +1,5 @@
 import struct
+import sys
 from calendar import timegm
 from datetime import datetime
 from pathlib import Path
@@ -76,7 +77,7 @@ def set_channel_parameter_from_open(target, fuzz_data_logger, session, node, *_,
         token_offset = sequence_offset + 8 + 4 + request_header_length + 4
         sec_channel_id, token_id = struct.unpack('ii', recv[token_offset:token_offset + 8])
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
     else:
         node.stack[1].stack[0]._default_value = sec_channel_id
         node.stack[1].stack[1]._default_value = token_id
@@ -91,13 +92,12 @@ def set_channel_parameter_from_create(target, fuzz_data_logger, session, node, *
         return
     try:
         channel_id, token_id, seq_num, req_id = struct.unpack('iiii', recv[8:24])
-        #authToken_id = struct.unpack('i', recv[62:66])
         global authToken_id 
         authToken_id = recv[62:66]
 
         
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
 
     else:
         node.stack[1].stack[0]._default_value = channel_id
@@ -115,7 +115,7 @@ def set_channel_parameter_from_activate(target, fuzz_data_logger, session, node,
         channel_id, token_id, seq_num, req_id = struct.unpack('iiii', recv[8:24])
         
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
 
     else:
         node.stack[1].stack[0]._default_value = channel_id
@@ -135,7 +135,7 @@ def set_channel_parameter_from_browse(target, fuzz_data_logger, session, node, *
         continuationP_id = recv[64:72]
         
     except struct.error:
-        fuzz_data_logger.log_error('Could not unpack channel parameters for this test case')
+        fuzz_data_logger.log_error('Could not unpack channel parameters for this test elif buildInId ==')
 
     else:
         node.stack[1].stack[0]._default_value = channel_id
@@ -147,24 +147,6 @@ def set_channel_parameter_from_browse(target, fuzz_data_logger, session, node, *
         
 
 
-# def hello_definition():
-#     s_initialize('Hello')
-
-#     with s_block('h-header'):
-#         s_bytes(b'HEL', name='Hello magic', fuzzable=False)
-#         s_bytes(b'F', name='Chunk type', fuzzable=False)
-#         s_size('h-body', offset=8, name='body size', fuzzable=False)
-
-#     with s_block('h-body'):
-#         s_dword(0, name='Protocol version')
-#         s_dword(65536, name='Receive buffer size')
-#         s_dword(65536, name='Send buffer size')
-#         s_dword(0, name='Max message size')
-#         s_dword(0, name='Max chunk count')
-#         endpoint = ENDPOINT_STRING
-#         s_dword(len(endpoint), name='Url length')
-#         s_bytes(endpoint, name='Endpoint url')
-
 def hello_definition():
     s_initialize('Hello')
 
@@ -174,59 +156,14 @@ def hello_definition():
         s_size('h-body', offset=8, name='body size', fuzzable=False)
 
     with s_block('h-body'):
-        s_dword(0, name='Protocol version', fuzzable=False)
-        s_dword(65536, name='Receive buffer size', fuzzable=False)
-        s_dword(65536, name='Send buffer size', fuzzable=False)
-        s_dword(0, name='Max message size', fuzzable=False)
-        s_dword(0, name='Max chunk count', fuzzable=False)
+        s_dword(0, name='Protocol version')
+        s_dword(65536, name='Receive buffer size')
+        s_dword(65536, name='Send buffer size')
+        s_dword(0, name='Max message size')
+        s_dword(0, name='Max chunk count')
         endpoint = ENDPOINT_STRING
-        s_dword(len(endpoint), name='Url length', fuzzable=False)
-        s_bytes(endpoint, name='Endpoint url', fuzzable=False)        
-
-
-# def open_channel_definition():
-#     '''
-#     Note: Message will be chunked. So chunk header included....
-#     '''
-#     s_initialize('OpenChannel')
-
-#     with s_block('o-header'):
-#         s_bytes(b'OPN', name='Open channel magic', fuzzable=False)
-#         s_bytes(b'F', name='Chunk type', fuzzable=False)
-#         s_size('o-body', offset=8, name='body size', fuzzable=False)
-
-#     with s_block('o-body'):
-#         s_dword(0, name='channel id')
-
-#         # chunking encryption
-#         policy_uri = 'http://opcfoundation.org/UA/SecurityPolicy#None'.encode('utf-8')
-#         s_dword(len(policy_uri), name='uri length')
-#         s_bytes(policy_uri, name='security policy uri')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='sender certificate')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='receiver certificate thumbprint')
-
-#         # chunking sequence
-#         s_dword(1, name='sequence number')
-#         s_dword(1, name='request id')
-
-#         # type id: OpenSecureChannel
-#         s_bytes(b'\x01\x00\xbe\x01', name='Type id')
-
-#         # request header
-#         s_bytes(b'\x00\x00', name='authentication token')
-#         s_qword(get_weird_opc_timestamp(), name='timestamp')
-#         s_dword(1, name='request handle')
-#         s_dword(0, name='return diagnostics')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
-#         s_dword(1000, name='timeout hint')
-#         s_bytes(b'\x00\x00\x00', name='additional header')
-
-#         # open channel parameter
-#         s_dword(0, name='client protocol version')
-#         s_dword(0, name='request type')
-#         s_dword(1, name='security mode')
-#         s_bytes(b'\x00\x00\x00\x00', name='client nonce')
-#         s_dword(3600000, name='requested lifetime')
+        s_dword(len(endpoint), name='Url length')
+        s_bytes(endpoint, name='Endpoint url')
 
 def open_channel_definition():
     '''
@@ -244,33 +181,33 @@ def open_channel_definition():
 
         # chunking encryption
         policy_uri = 'http://opcfoundation.org/UA/SecurityPolicy#None'.encode('utf-8')
-        s_dword(len(policy_uri), name='uri length', fuzzable=False)
-        s_bytes(policy_uri, name='security policy uri', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='sender certificate', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='receiver certificate thumbprint', fuzzable=False)
+        s_dword(len(policy_uri), name='uri length')
+        s_bytes(policy_uri, name='security policy uri')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='sender certificate')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='receiver certificate thumbprint')
 
         # chunking sequence
-        s_dword(1, name='sequence number', fuzzable=False)
-        s_dword(1, name='request id', fuzzable=False)
+        s_dword(1, name='sequence number')
+        s_dword(1, name='request id')
 
         # type id: OpenSecureChannel
-        s_bytes(b'\x01\x00\xbe\x01', name='Type id', fuzzable=False)
+        s_bytes(b'\x01\x00\xbe\x01', name='Type id')
 
         # request header
-        s_bytes(b'\x00\x00', name='authentication token', fuzzable=False)
-        s_qword(get_weird_opc_timestamp(), name='timestamp', fuzzable=False)
-        s_dword(1, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(1000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_bytes(b'\x00\x00', name='authentication token')
+        s_qword(get_weird_opc_timestamp(), name='timestamp')
+        s_dword(1, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(1000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         # open channel parameter
-        s_dword(0, name='client protocol version', fuzzable=False)
-        s_dword(0, name='request type', fuzzable=False)
-        s_dword(1, name='security mode', fuzzable=False)
-        s_bytes(b'\x00\x00\x00\x00', name='client nonce', fuzzable=False)
-        s_dword(3600000, name='requested lifetime', fuzzable=False)
+        s_dword(0, name='client protocol version')
+        s_dword(0, name='request type')
+        s_dword(1, name='security mode')
+        s_bytes(b'\x00\x00\x00\x00', name='client nonce')
+        s_dword(3600000, name='requested lifetime')
 
 
 def close_channel_definition():
@@ -299,65 +236,6 @@ def close_channel_definition():
         s_bytes(b'\x00\x00\x00', name='additional header')
 
 
-# def activate_session_definition():
-#     s_initialize('ActivateSession')
-
-#     with s_block('a-header'):
-#         s_bytes(b'MSG', name='Activate session magic', fuzzable=False)
-#         s_bytes(b'F', name='Chunk type', fuzzable=False)
-#         s_size('a-body', offset=8, name='body size', fuzzable=False)
-
-#     with s_block('a-body'):
-#         s_dword(0, name='secure channel id', fuzzable=False)  # will be overwritten
-#         s_dword(4, name='secure token id', fuzzable=False)  # will be overwritten
-#         s_dword(2, name='secure sequence number', fuzzable=False)  # will be overwritten
-#         s_dword(2, name='secure request id', fuzzable=False)  # will be overwritten
-
-#         # type id: OpenSecureChannel
-#         s_bytes(b'\x01\x00' + struct.pack('<H', 467), name='Type id', fuzzable=False)
-
-#         # request header
-#         s_dword(4, name='encoding mask guid')
-#         s_bytes(b'\x01\x00', name='namespace idx')
-#         s_bytes(b'\xcc\x8c\x09\xf9\x7b\x93\xd1\xb3\x10\xc1\x2c\x62\x3c\x43\x04\xb0', name='identifier guid')
-#         s_qword(get_weird_opc_timestamp(), name='timestamp')
-#         s_dword(1, name='request handle')
-#         s_dword(0, name='return diagnostics')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
-#         s_dword(600000, name='timeout hint')
-#         s_bytes(b'\x00\x00\x00', name='additional header')
-
-#         # client signature
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='client algorithm')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='client signature')
-
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='locale id')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='client software certificates')
-
-#         # user identity token
-#         s_bytes(b'\x01\x00' + struct.pack('<H', 324), name='user type id', fuzzable=False)
-#         s_bytes(b'\x01', name='binary body')
-
-#         policy_id = 'open62541-username-policy'.encode('utf-8')
-#         username = 'user1'.encode('utf-8')
-#         password = 'password'.encode('utf-8')
-
-#         s_dword(len(policy_id) + len(username) + len(password) + 4 + 4 + 4 + 4,
-#                 name='length user id token')  # 3 length fields + algorithm
-
-#         s_dword(len(policy_id), name='id length')
-#         s_bytes(policy_id, name='policy id', fuzzable=False)
-#         s_dword(len(username), name='username length')
-#         s_bytes(username, name='username')
-#         s_dword(len(password), name='password length')
-#         s_bytes(password, name='password')
-
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='encryption algorithm')
-
-#         # user token signature
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='user sign algorithm')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='user signature')
-
 def activate_session_definition():
     s_initialize('ActivateSession')
 
@@ -377,10 +255,8 @@ def activate_session_definition():
 
         # request header
         s_bytes(b'\x02', name='encoding mask guid', fuzzable=False)
-        #s_dword(2, name='encoding mask guid', fuzzable=False)
         s_bytes(b'\x00\x00', name='namespace idx', fuzzable=False)
         s_dword(0,name='authentication token id',fuzzable=False)  # will be overwritten
-        #s_bytes(b'\xcc\x8c\x09\xf9\x7b\x93\xd1\xb3\x10\xc1\x2c\x62\x3c\x43\x04\xb0', name='identifier guid', fuzzable=False)
         s_qword(get_weird_opc_timestamp(), name='timestamp', fuzzable=False)
         s_dword(2, name='request handle', fuzzable=False)
         s_dword(0, name='return diagnostics', fuzzable=False)
@@ -394,26 +270,6 @@ def activate_session_definition():
 
         s_bytes(b'\x00\x00\x00\x00', name='locale id', fuzzable=False)
         s_bytes(b'\x00\x00\x00\x00', name='client software certificates', fuzzable=False)
-
-        # user identity token
-        # s_bytes(b'\x01\x00' + struct.pack('<H', 324), name='user type id', fuzzable=False)
-        # s_bytes(b'\x01', name='binary body', fuzzable=False)
-
-        # policy_id = 'open62541-username-policy'.encode('utf-8')
-        # username = 'user1'.encode('utf-8')
-        # password = 'password'.encode('utf-8')
-
-        # s_dword(len(policy_id) + len(username) + len(password) + 4 + 4 + 4 + 4,
-        #         name='length user id token', fuzzable=False)  # 3 length fields + algorithm
-
-        # s_dword(len(policy_id), name='id length', fuzzable=False)
-        # s_bytes(policy_id, name='policy id', fuzzable=False)
-        # s_dword(len(username), name='username length', fuzzable=False)
-        # s_bytes(username, name='username', fuzzable=False)
-        # s_dword(len(password), name='password length', fuzzable=False)
-        # s_bytes(password, name='password', fuzzable=False)
-
-        # s_bytes(b'\xFF\xFF\xFF\xFF', name='encryption algorithm', fuzzable=False)
 
         # UserIdentityToken
         s_bytes(b'\x01\x00' + struct.pack('<H', 321), name='user type id', fuzzable=False)
@@ -448,20 +304,20 @@ def discovery_service_definition(service_name: str, request_type: int):
         s_bytes(b'\x01\x00' + struct.pack('<H', request_type), name='Type id', fuzzable=False)
 
         # # request header
-        s_bytes(b'\x00\x00', name='authentication token', fuzzable=False)
+        s_bytes(b'\x00\x00', name='authentication token')
         s_qword(get_weird_opc_timestamp(), name='timestamp')
-        s_dword(1, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(5000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_dword(1, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(5000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         # request parameter
         endpoint = ENDPOINT_STRING
-        s_dword(len(endpoint), name='url length', fuzzable=False)
-        s_bytes(endpoint, name='endpoint url', fuzzable=False)
-        s_bytes(b'\x00\x00\x00\x00', name='locale ids', fuzzable=False)
-        s_bytes(b'\x00\x00\x00\x00', name='profile ids', fuzzable=False)
+        s_dword(len(endpoint), name='url length')
+        s_bytes(endpoint, name='endpoint url')
+        s_bytes(b'\x00\x00\x00\x00', name='locale ids')
+        s_bytes(b'\x00\x00\x00\x00', name='profile ids')
 
 
 def find_servers_on_network_definition():
@@ -482,18 +338,18 @@ def find_servers_on_network_definition():
         s_bytes(b'\x01\x00' + struct.pack('<H', 12208), name='Type id', fuzzable=False)
 
         # request header
-        s_bytes(b'\x00\x00', name='authentication token', fuzzable=False)
+        s_bytes(b'\x00\x00', name='authentication token')
         s_qword(get_weird_opc_timestamp(), name='timestamp')
-        s_dword(1, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(1000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_dword(1, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(1000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         # request parameter
-        s_dword(0, name='starting record id', fuzzable=False)
-        s_dword(0, name='max records to return', fuzzable=False)
-        s_bytes(b'\x00\x00\x00\x00', name='server capability filter', fuzzable=False)
+        s_dword(0, name='starting record id')
+        s_dword(0, name='max records to return')
+        s_bytes(b'\x00\x00\x00\x00', name='server capability filter')
 
 
 def register_server_2_definition():
@@ -514,90 +370,41 @@ def register_server_2_definition():
         s_bytes(b'\x01\x00' + struct.pack('<H', 12211), name='Type id', fuzzable=False)
 
         # request header
-        s_bytes(b'\x00\x00', name='authentication token', fuzzable=False)
+        s_bytes(b'\x00\x00', name='authentication token')
         s_qword(get_weird_opc_timestamp(), name='timestamp')
-        s_dword(1, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(1000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_dword(1, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(1000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         server_uri = 'urn:opcua.server'.encode('utf-8')
-        s_dword(len(server_uri), name='server length', fuzzable=False)
-        s_bytes(server_uri, name='server uri', fuzzable=False)
+        s_dword(len(server_uri), name='server length')
+        s_bytes(server_uri, name='server uri')
 
         product_uri = 'http://my.opcua-implementation.code'.encode('utf-8')
-        s_dword(len(product_uri), name='product length', fuzzable=False)
-        s_bytes(product_uri, name='product uri', fuzzable=False)
+        s_dword(len(product_uri), name='product length')
+        s_bytes(product_uri, name='product uri')
 
         # ('ServerNames', 'ListOfLocalizedText'),
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='ServerNames', fuzzable=False)
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='ServerNames')
 
-        s_dword(0, name='server type', fuzzable=False)
+        s_dword(0, name='server type')
 
         # ('GatewayServerUri', 'String'),
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='GatewayServerUri', fuzzable=False)
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='GatewayServerUri')
 
-        s_dword(1, name='Number of discovery uris', fuzzable=False)
+        s_dword(1, name='Number of discovery uris')
         discovery_uri = ENDPOINT_STRING
-        s_dword(len(discovery_uri), name='discovery length', fuzzable=False)
-        s_bytes(discovery_uri, name='discovery url', fuzzable=False)
+        s_dword(len(discovery_uri), name='discovery length')
+        s_bytes(discovery_uri, name='discovery url')
 
         # ('SemaphoreFilePath', 'String'),
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='SemaphoreFilePath', fuzzable=False)
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='SemaphoreFilePath')
 
-        s_byte(1, name='is online', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='discovery configuration', fuzzable=False)
+        s_byte(1, name='is online')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='discovery configuration')
 
-
-# def create_session_definition():
-#     s_initialize('CreateSession')
-
-#     with s_block('cs-header'):
-#         s_bytes(b'MSG', name='Open channel magic', fuzzable=False)
-#         s_bytes(b'F', name='Chunk type', fuzzable=False)
-#         s_size('cs-body', offset=8, name='body size', fuzzable=False)
-
-#     with s_block('cs-body'):
-#         # security
-#         s_dword(0, name='secure channel id', fuzzable=False)  # will be overwritten
-#         s_dword(4, name='secure token id', fuzzable=False)  # will be overwritten
-#         s_dword(2, name='secure sequence number', fuzzable=False)  # will be overwritten
-#         s_dword(2, name='secure request id', fuzzable=False)  # will be overwritten
-
-#         s_bytes(b'\x01\x00' + struct.pack('<H', 461), name='Type id', fuzzable=False)
-
-#         # request header
-#         s_bytes(b'\x00\x00', name='authentication token')
-#         s_qword(get_weird_opc_timestamp(), name='timestamp')
-#         s_dword(1, name='request handle')
-#         s_dword(0, name='return diagnostics')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
-#         s_dword(1000, name='timeout hint')
-#         s_bytes(b'\x00\x00\x00', name='additional header')
-
-#         # application description
-#         application = 'urn:unconfigured:application'.encode('utf-8')
-#         s_dword(len(application), name='UriLength')
-#         s_bytes(application, name='ApplicationUri')
-
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='ProductUri')
-#         s_byte(0, name='ApplicationName')
-#         s_dword(1, name='ApplicationType')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='GatewayServerUri')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='DiscoveryProfileUri')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='DiscoveryUrls')
-
-#         # create session parameter
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='ServerUri')
-#         endpoint = ENDPOINT_STRING
-#         s_dword(len(endpoint), name='UrlLength')
-#         s_bytes(endpoint, name='EndpointUrl')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='SessionName')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='ClientNonce')
-#         s_bytes(b'\xFF\xFF\xFF\xFF', name='ClientCertificate')
-#         s_bytes(struct.pack('d', 1200000.0), name='RequestedSessionTimeout')
-#         s_dword(2147483647, name='MaxResponseMessageSize')
 
 def create_session_definition():
     s_initialize('CreateSession')
@@ -617,36 +424,36 @@ def create_session_definition():
         s_bytes(b'\x01\x00' + struct.pack('<H', 461), name='Type id', fuzzable=False)
 
         # request header
-        s_bytes(b'\x00\x00', name='authentication token', fuzzable=False)
-        s_qword(get_weird_opc_timestamp(), name='timestamp', fuzzable=False)
-        s_dword(1, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(1000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_bytes(b'\x00\x00', name='authentication token')
+        s_qword(get_weird_opc_timestamp(), name='timestamp')
+        s_dword(1, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(1000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         # application description
         application = 'urn:unconfigured:application'.encode('utf-8')
-        s_dword(len(application), name='UriLength', fuzzable=False)
-        s_bytes(application, name='ApplicationUri', fuzzable=False)
+        s_dword(len(application), name='UriLength')
+        s_bytes(application, name='ApplicationUri')
 
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='ProductUri', fuzzable=False)
-        s_byte(0, name='ApplicationName', fuzzable=False)
-        s_dword(1, name='ApplicationType', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='GatewayServerUri', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='DiscoveryProfileUri', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='DiscoveryUrls', fuzzable=False)
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='ProductUri')
+        s_byte(0, name='ApplicationName')
+        s_dword(1, name='ApplicationType')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='GatewayServerUri')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='DiscoveryProfileUri')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='DiscoveryUrls')
 
         # create session parameter
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='ServerUri', fuzzable=False)
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='ServerUri')
         endpoint = ENDPOINT_STRING
-        s_dword(len(endpoint), name='UrlLength', fuzzable=False)
-        s_bytes(endpoint, name='EndpointUrl', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='SessionName', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='ClientNonce', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='ClientCertificate', fuzzable=False)
-        s_bytes(struct.pack('d', 1200000.0), name='RequestedSessionTimeout', fuzzable=False)
-        s_dword(2147483647, name='MaxResponseMessageSize', fuzzable=False)
+        s_dword(len(endpoint), name='UrlLength')
+        s_bytes(endpoint, name='EndpointUrl')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='SessionName')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='ClientNonce')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='ClientCertificate')
+        s_bytes(struct.pack('d', 1200000.0), name='RequestedSessionTimeout')
+        s_dword(2147483647, name='MaxResponseMessageSize')
 
 
 def close_session_definition():
@@ -697,23 +504,23 @@ def browse_node_definition(node_id: int):
 
         # request header
         #authentification token
-        s_bytes(b'\x02', name='encoding mask', fuzzable=False)
-        s_bytes(b'\x00\x00', name='namespace index', fuzzable=False)
+        s_bytes(b'\x02', name='encoding mask')
+        s_bytes(b'\x00\x00', name='namespace index')
         s_dword(0,name='authentication token id',fuzzable=False)  # will be overwritten
         s_qword(get_weird_opc_timestamp(), name='timestamp')
         s_dword(3, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(5000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(5000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         #request parameter
-        s_bytes(b'\x00', name='view encodingmask', fuzzable=False)
-        s_bytes(b'\x00', name='view id', fuzzable=False)
-        s_qword(0, name='view timestamp', fuzzable=False)
-        s_dword(0, name='view version', fuzzable=False)
-        s_dword(10, name='requested max references per node', fuzzable=False)
-        s_dword(1, name='array size (nodes to browse)', fuzzable=False)
+        s_bytes(b'\x00', name='view encodingmask')
+        s_bytes(b'\x00', name='view id')
+        s_qword(0, name='view timestamp')
+        s_dword(0, name='view version')
+        s_dword(10, name='requested max references per node')
+        s_dword(1, name='array size (nodes to browse)')
 
         if(0 < node_id < 255):
             s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)', fuzzable=False)
@@ -746,20 +553,20 @@ def browse_next_definition():
         s_bytes(b'\x01\x00' + struct.pack('<H', 533), name='Type id', fuzzable=False)
 
         # request header
-        s_bytes(b'\x02', name='encoding mask', fuzzable=False)
-        s_bytes(b'\x00\x00', name='namespace index', fuzzable=False)
+        s_bytes(b'\x02', name='encoding mask')
+        s_bytes(b'\x00\x00', name='namespace index')
         s_dword(0,name='authentication token id',fuzzable=False)  # will be overwritten
         s_qword(get_weird_opc_timestamp(), name='timestamp')
-        s_dword(4, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(5000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_dword(4, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(5000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         #request parameter
-        s_bytes(b'\x00', name='releaseContinuationPoints (false)', fuzzable=False)
-        s_dword(1, name='array size (continuaionPoints)', fuzzable=False)
-        s_dword(8, name='mystery bytes', fuzzable=False)
+        s_bytes(b'\x00', name='releaseContinuationPoints (false)')
+        s_dword(1, name='array size (continuaionPoints)')
+        s_dword(8, name='mystery bytes')
         s_qword(0,name='continuationPoints',fuzzable=False)  # will be overwritten
 
 
@@ -781,32 +588,33 @@ def read_node_definition(node_id: int, attribute: int):
         s_bytes(b'\x01\x00' + struct.pack('<H', 631), name='Type id', fuzzable=False)
 
         # request header
-        s_bytes(b'\x02', name='encoding mask', fuzzable=False)
-        s_bytes(b'\x00\x00', name='namespace index', fuzzable=False)
+        s_bytes(b'\x02', name='encoding mask')
+        s_bytes(b'\x00\x00', name='namespace index')
         s_dword(0, name='authentification token id', fuzzable=False)  # will be overwritten
         s_qword(get_weird_opc_timestamp(), name='timestamp')
-        s_dword(3, name='request handle', fuzzable=False)
-        s_dword(0, name='return diagnostics', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id', fuzzable=False)
-        s_dword(5000, name='timeout hint', fuzzable=False)
-        s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
+        s_dword(3, name='request handle')
+        s_dword(0, name='return diagnostics')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
+        s_dword(5000, name='timeout hint')
+        s_bytes(b'\x00\x00\x00', name='additional header')
 
         # request parameter
-        s_qword(0, name='max age', fuzzable=False)
-        s_dword(3, name='timestampsToReturn', fuzzable=False)
-        s_dword(1, name='Number of nodes to read', fuzzable=False)
-        s_bytes(b'\x00', name='node id encoding mask', fuzzable=False)
+        s_qword(0, name='max age')
+        s_dword(3, name='timestampsToReturn')
+        s_dword(1, name='Number of nodes to read')
+        s_bytes(b'\x00', name='node id encoding mask')
         
         if(0 < node_id < 255):
-            s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)', fuzzable=False)
+            s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)')
         else:
-            s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)', fuzzable=False)
-            s_bytes(b'\x00', name='namespace id', fuzzable=False)
+            s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)')
+            s_bytes(b'\x00', name='namespace id')
 
-        s_dword(attribute, name='AttributeId', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='IndexRange', fuzzable=False)
-        s_bytes(b'\x00\x00', name='data encoding id', fuzzable=False)
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='data encoding name', fuzzable=False)
+        s_bytes(struct.pack('<H', node_id), name='node id')
+        s_dword(attribute, name='AttributeId')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='IndexRange')
+        s_bytes(b'\x00\x00', name='data encoding id')
+        s_bytes(b'\xFF\xFF\xFF\xFF', name='data encoding name')
 
 def write_node_definition(node_id: int, buildInId: int, value: any):
     s_initialize('Write')
@@ -837,8 +645,7 @@ def write_node_definition(node_id: int, buildInId: int, value: any):
         s_bytes(b'\x00\x00\x00', name='additional header', fuzzable=False)
 
         # request parameter
-        s_qword(1, name='array size')
-        s_bytes(b'\x01\x01', name='node id encodingmask + namspace index', fuzzable=False)
+        s_dword(1, name='array size')
        
         if(0 < node_id < 255):
             s_bytes(b'\x00', name='nodes to browse encodingmask (2 bytes)', fuzzable=False)
@@ -846,11 +653,35 @@ def write_node_definition(node_id: int, buildInId: int, value: any):
             s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)', fuzzable=False)
             s_bytes(b'\x00', name='namespace id', fuzzable=False)
 
-        s_dword(bytes([buildInId]), name='buildInType id', fuzzable=False)
+        s_bytes(struct.pack('<H', node_id), name='node id', fuzzable=False)
+        s_dword(bytes([13]), name='attribute id', fuzzable=False)
         s_bytes(b'\xFF\xFF\xFF\xFF', name='IndexRange', fuzzable=False)
         s_bytes(b'\x05', name='value encodingmask', fuzzable=False)
         s_bytes(bytes([buildInId]), name='variant type', fuzzable=False)
-        s_qword(bytes([value]), name='value to write', fuzzable=False)
+
+        if buildInId == 1:
+                s_bytes(struct.pack('<?', value), name='value to write (boolean)', fuzzable=False)
+        elif buildInId ==  2 or buildInId == 3:
+                s_bytes(value, name='value to write (sbyte and byte)', fuzzable=False)
+        elif buildInId == 4:
+                s_bytes(struct.pack('<h', value), name='value to write(Int16) ', fuzzable=False)
+        elif buildInId == 5:
+                s_bytes(struct.pack('<H', value), name='value to write (UInt16)', fuzzable=False)
+        elif buildInId == 6:
+                s_bytes(struct.pack('<i', value), name='value to write (Int32)', fuzzable=False)
+        elif buildInId == 7:
+                s_bytes(struct.pack('<I', value), name='value to write (UInt32)', fuzzable=False)
+        elif buildInId == 8:
+                s_bytes(struct.pack('<q', value), name='value to write (Int64)', fuzzable=False)
+        elif buildInId == 9:
+                s_bytes(struct.pack('<Q', value), name='value to write (UInt64)', fuzzable=False)
+        elif buildInId == 10:
+                s_dword(struct.pack('<f', value), name='value to write (float)', fuzzable=False)
+        elif buildInId == 11:
+                s_qword(struct.pack('<d', value), name='value to write (double)', fuzzable=False)
+        elif buildInId == 12:
+               s_bytes(value.encode('utf-8'), name='value to write (string)', fuzzable=False)
+
         s_qword(get_weird_opc_timestamp(), name='source timestamp', fuzzable=False)
 
 def fuzz_opcua(file_path: Path) -> str:
@@ -866,7 +697,7 @@ def fuzz_opcua(file_path: Path) -> str:
     browse_node_definition(node_id=2041)
     browse_next_definition()
     read_node_definition(node_id=84,attribute=1)
-    write_node_definition(node_id=84,buildInId=11,value=42)
+    write_node_definition(node_id=1003,buildInId=11,value=42)
 
     discovery_service_definition(service_name='FindServers', request_type=422)
     discovery_service_definition(service_name='GetEndpoints', request_type=428)
@@ -877,21 +708,19 @@ def fuzz_opcua(file_path: Path) -> str:
     session.connect(s_get('Hello'), s_get('OpenChannel'))
     # session.connect(s_get('OpenChannel'), s_get('CloseChannel'), callback=set_channel_parameter_from_open)
     # session.connect(s_get('OpenChannel'), s_get('FindServers'), callback=set_channel_parameter_from_open)
-    session.connect(s_get('OpenChannel'), s_get('GetEndpoints'), callback=set_channel_parameter_from_open)
+    #session.connect(s_get('OpenChannel'), s_get('GetEndpoints'), callback=set_channel_parameter_from_open)
     #session.connect(s_get('OpenChannel'), s_get('FindServersOnNetwork'), callback=set_channel_parameter_from_open)
     #session.connect(s_get('OpenChannel'), s_get('RegisterServer2'), callback=set_channel_parameter_from_open)
 
-    #Change SOPC_MAX_SESSIONS_PER_SECURE_CONNECTION in sopc_toolkit_config_constants.h
-    # session.connect(s_get('OpenChannel'), s_get('CreateSession'), callback=set_channel_parameter_from_open)
-    # session.connect(s_get('CreateSession'), s_get('ActivateSession'), callback=set_channel_parameter_from_create)
+    session.connect(s_get('OpenChannel'), s_get('CreateSession'), callback=set_channel_parameter_from_open)
+    session.connect(s_get('CreateSession'), s_get('ActivateSession'), callback=set_channel_parameter_from_create)
     #session.connect(s_get('ActivateSession'), s_get('CloseSession'), callback=set_channel_parameter_from_activate)
     
     #session.connect(s_get('ActivateSession'), s_get('Browse'), callback=set_channel_parameter_from_activate)
     #session.connect(s_get('Browse'), s_get('BrowseNext'), callback=set_channel_parameter_from_browse)
-    #session.connect(s_get('BrowseNext'), s_get('CloseSession'), callback=set_channel_parameter_from_activate)
 
     #session.connect(s_get('ActivateSession'), s_get('Read'), callback=set_channel_parameter_from_activate)
-    #session.connect(s_get('ActivateSession'), s_get('Write'), callback=set_channel_parameter_from_activate)
+    session.connect(s_get('ActivateSession'), s_get('Write'), callback=set_channel_parameter_from_activate)
 
 
     try:

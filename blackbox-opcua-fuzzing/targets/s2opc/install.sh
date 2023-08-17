@@ -5,7 +5,7 @@ set -o nounset
 set -o pipefail 
 
 apt-get update
-apt-get install -y wget build-essential clang-9 gcc g++ doxygen graphviz 
+apt-get install -y wget build-essential clang-9 gcc g++ doxygen graphviz
 
 pip install cmake paho-mqtt
 
