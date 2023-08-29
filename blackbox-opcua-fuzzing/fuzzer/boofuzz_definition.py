@@ -177,7 +177,7 @@ def open_channel_definition():
         s_size('o-body', offset=8, name='body size', fuzzable=False)
 
     with s_block('o-body'):
-        s_dword(0, name='channel id')
+        s_dword(0, name='channel id', fuzzable=False)
 
         # chunking encryption
         policy_uri = 'http://opcfoundation.org/UA/SecurityPolicy#None'.encode('utf-8')
@@ -191,7 +191,7 @@ def open_channel_definition():
         s_dword(1, name='request id')
 
         # type id: OpenSecureChannel
-        s_bytes(b'\x01\x00\xbe\x01', name='Type id')
+        s_bytes(b'\x01\x00\xbe\x01', name='Type id', fuzzable=False)
 
         # request header
         s_bytes(b'\x00\x00', name='authentication token')
@@ -256,7 +256,7 @@ def activate_session_definition():
         # request header
         s_bytes(b'\x02', name='encoding mask guid')
         s_bytes(b'\x00\x00', name='namespace idx')
-        s_dword(0,name='authentication token id',fuzzable=False)  # will be overwritten
+        s_dword(0,name='authentication token id')  # will be overwritten
         s_qword(get_weird_opc_timestamp(), name='timestamp')
         s_dword(2, name='request handle')
         s_dword(0, name='return diagnostics')
@@ -272,8 +272,8 @@ def activate_session_definition():
         s_bytes(b'\x00\x00\x00\x00', name='client software certificates')
 
         # UserIdentityToken
-        s_bytes(b'\x01\x00' + struct.pack('<H', 321), name='user type id')
-        s_bytes(b'\x01', name='binary body', fuzzable=False)
+        s_bytes(b'\x01\x00' + struct.pack('<H', 321), name='user type id', fuzzable=False)
+        s_bytes(b'\x01', name='binary body')
 
         policy_id = 'anonymous'.encode('utf-8')
         s_dword(len(policy_id) + 4 + 4 + 4 + 4, name='length user id token')
@@ -509,7 +509,7 @@ def browse_node_definition(node_id: int):
         s_dword(0,name='authentication token id',fuzzable=False)  # will be overwritten
         s_qword(get_weird_opc_timestamp(), name='timestamp')
         s_dword(3, name='request handle')
-        s_dword(0, name='return diagnostics')
+        s_dword(0, name='return diagnostics', fuzzable=False)
         s_bytes(b'\xFF\xFF\xFF\xFF', name='audit entry id')
         s_dword(5000, name='timeout hint')
         s_bytes(b'\x00\x00\x00', name='additional header')
@@ -528,7 +528,7 @@ def browse_node_definition(node_id: int):
             s_bytes(b'\x01', name='nodes to browse encodingmask (4 bytes)')
             s_bytes(b'\x00', name='namespace id')
             
-        s_bytes(struct.pack('<H', node_id), name='node id', fuzzable=False)
+        s_bytes(struct.pack('<H', node_id), name='node id')
         s_dword(2, name='browse direction')
         s_bytes(b'\x00\x00', name='referenceTypeId')
         s_bytes(b'\x00', name='include subtypes')
@@ -654,10 +654,10 @@ def write_node_definition(node_id: int, buildInId: int, value: any):
             s_bytes(b'\x00', name='namespace id')
 
         s_bytes(struct.pack('<H', node_id), name='node id')
-        s_dword(bytes([13]), name='attribute id')
-        s_bytes(b'\xFF\xFF\xFF\xFF', name='IndexRange')
+        s_bytes(b'\x0d\x00\x00\x00', name='attribute id')
+        s_bytes(b'\xff\xff\xff\xff', name='IndexRange')
         s_bytes(b'\x05', name='value encodingmask')
-        s_bytes(bytes([buildInId]), name='variant type')
+        s_bytes(struct.pack('<H', buildInId), name='variant type')
 
         if buildInId == 1:
                 s_bytes(struct.pack('<?', value), name='value to write (boolean)')
@@ -715,13 +715,10 @@ def fuzz_opcua(file_path: Path) -> str:
     session.connect(s_get('OpenChannel'), s_get('CreateSession'), callback=set_channel_parameter_from_open)
     session.connect(s_get('CreateSession'), s_get('ActivateSession'), callback=set_channel_parameter_from_create)
     session.connect(s_get('ActivateSession'), s_get('CloseSession'), callback=set_channel_parameter_from_activate)
-    
     session.connect(s_get('ActivateSession'), s_get('Browse'), callback=set_channel_parameter_from_activate)
     session.connect(s_get('Browse'), s_get('BrowseNext'), callback=set_channel_parameter_from_browse)
-
     session.connect(s_get('ActivateSession'), s_get('Read'), callback=set_channel_parameter_from_activate)
-    session.connect(s_get('ActivateSession'), s_get('Write'), callback=set_channel_parameter_from_activate)
-
+    #session.connect(s_get('ActivateSession'), s_get('Write'), callback=set_channel_parameter_from_activate)
 
     try:
         session.fuzz()
