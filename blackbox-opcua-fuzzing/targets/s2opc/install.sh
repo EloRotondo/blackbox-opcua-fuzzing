@@ -58,10 +58,10 @@ cd ..
 sed -i "s/4841/4840/g" S2OPC_Server_Demo_Config.xml
 sed -i "s/encrypted_server_4k_key.pem/server_4k_key.pem/g" S2OPC_Server_Demo_Config.xml
 sed -i "13s/true/false/g" S2OPC_Server_Demo_Config.xml
-sed -i -e '26a <ApplicationType type="DiscoveryServer"/>' S2OPC_Server_Demo_Config.xml
+sed -i -e '21a <ApplicationType type="DiscoveryServer"/>' S2OPC_Server_Demo_Config.xml
 
 mv /opt/app/targets/s2opc/nonePolicy.txt .
-linenumber=32
+linenumber=27
 while read line; do 
 sed -i -e "${linenumber}a $line" S2OPC_Server_Demo_Config.xml;
 linenumber=$((linenumber+1))
