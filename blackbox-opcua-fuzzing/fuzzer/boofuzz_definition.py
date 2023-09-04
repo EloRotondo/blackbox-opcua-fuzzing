@@ -697,7 +697,7 @@ def fuzz_opcua(file_path: Path) -> str:
     browse_node_definition(node_id=2041)
     browse_next_definition()
     read_node_definition(node_id=84,attribute=1)
-    write_node_definition(node_id=1003,buildInId=11,value=42)
+    #write_node_definition(node_id=1003,buildInId=11,value=42)
 
     discovery_service_definition(service_name='FindServers', request_type=422)
     discovery_service_definition(service_name='GetEndpoints', request_type=428)
